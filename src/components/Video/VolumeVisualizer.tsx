@@ -40,17 +40,23 @@ type VisualizerProps = {
   micDevice: boolean;
   stream: MediaStream;
   height: number;
+  played: boolean;
 };
-const Visualizer: React.FC<VisualizerProps> = (props) => {
+const Visualizer: React.FC<VisualizerProps> = ({ stream, height, played }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
+  console.log('played', played);
   useEffect(() => {
-    if (props.stream.getAudioTracks().length === 0) {
+    if (!played) {
+      console.log('not played');
+      return;
+    }
+    console.log(stream.getAudioTracks().length);
+    if (stream.getAudioTracks().length === 0) {
       return;
     }
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     const audioContext = new AudioContext();
-    const mediaStreamSource = audioContext.createMediaStreamSource(props.stream);
+    const mediaStreamSource = audioContext.createMediaStreamSource(stream);
     const analyser = audioContext.createAnalyser();
     analyser.fftSize = 2048;
     const bufferLength = analyser.frequencyBinCount;
@@ -90,14 +96,9 @@ const Visualizer: React.FC<VisualizerProps> = (props) => {
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.stream]);
+  }, [stream, played]);
   return (
-    <canvas
-      width={CANVAS_WIDTH}
-      height={props.height}
-      className="volume-visualizer"
-      ref={canvasRef}
-    />
+    <canvas width={CANVAS_WIDTH} height={height} className="volume-visualizer" ref={canvasRef} />
   );
 };
 

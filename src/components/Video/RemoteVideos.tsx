@@ -97,6 +97,7 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
   const simulcast = useAppSelector((state) => state.simulcast);
   const spotlight = useAppSelector((state) => state.spotlight);
   const focused = props.stream.id && focusedSpotlightConnectionIds[props.stream.id];
+  const [volumePlayed, setVolumePlayed] = useState<boolean>(false);
   return (
     <div className="col-auto">
       <div className="video-status">
@@ -144,8 +145,12 @@ const RemoteVideo: React.FC<{ stream: MediaStream }> = (props) => {
             mute={mute}
             audioOutput={audioOutput}
             displayResolution={displayResolution}
+            onPlay={() => {
+              setVolumePlayed(true);
+              console.log('onPlay remote video');
+            }}
           />
-          <VolumeVisualizer micDevice stream={props.stream} height={height} />
+          <VolumeVisualizer micDevice stream={props.stream} height={height} played={volumePlayed} />
         </div>
         <MediaStreamStatsReport stream={props.stream} />
       </div>

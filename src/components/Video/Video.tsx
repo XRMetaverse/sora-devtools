@@ -10,6 +10,7 @@ type VideoProps = {
   mute: boolean;
   audioOutput: string;
   setHeight: Dispatch<SetStateAction<number>>;
+  onPlay?: () => void;
 };
 const VideoElement: React.FC<VideoProps> = (props) => {
   const { displayResolution, stream, mute, audioOutput, setHeight } = props;
@@ -80,6 +81,19 @@ const VideoElement: React.FC<VideoProps> = (props) => {
       ref={videoRef}
       width={0 < videoSize.width ? videoSize.width : undefined}
       height={0 < videoSize.height ? videoSize.height : undefined}
+      onPlay={() => {
+        console.log('onPlay');
+        if (videoRef.current) {
+          console.log(videoRef.current.played);
+        }
+        props.onPlay && props.onPlay();
+      }}
+      onVolumeChange={() => {
+        console.log('onVolumeChange');
+        if (videoRef.current) {
+          console.log(videoRef.current.volume);
+        }
+      }}
     />
   );
 };
